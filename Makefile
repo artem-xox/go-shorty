@@ -29,11 +29,22 @@ deps:
 	go mod download
 	go mod vendor
 
+.PHONY: reqs
+## Install/update additional requirenments
+reqs:
+	wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.52.0
+
 .PHONY: test
 ## Run Go tests
 test:
 	@echo "Running tests..."
 	go test ./...
+
+.PHONY: lint
+## Run linter
+lint:
+	@echo "Running code lint..."
+	./bin/golangci-lint run 
 
 .PHONY: redis-run
 ## Run redis locally

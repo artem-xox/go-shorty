@@ -1,4 +1,4 @@
-module shorty
+module github.com/artem-xox/go-shorty
 
 go 1.18
 

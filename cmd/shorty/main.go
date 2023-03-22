@@ -5,16 +5,30 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/artem-xox/go-shorty/internal/server"
+	"github.com/artem-xox/go-shorty/internal/service"
+	"github.com/artem-xox/go-shorty/internal/store"
 	"github.com/go-redis/redis/v8"
 )
 
 func main() {
+
+	// serive config
+	cfg, err := server.NewConfig()
+	if err != nil {
+		log.Fatalf("config init")
+	}
+
 	// create a new Redis client
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     cfg.Redis.Addr,
 		Password: "",
 		DB:       0,
 	})
+
+	shortyService := service.ShortyService{
+		Store: &store.RedisStorage{},
+	}
 
 	// test the Redis client connection by pinging the server
 	pong, err := rdb.Ping(rdb.Context()).Result()
@@ -23,16 +37,10 @@ func main() {
 	}
 	fmt.Println("Redis client connected: ", pong)
 
-	// define the HTTP handler function
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		// retrieve a value from Redis
-		val, err := rdb.Get(rdb.Context(), "key").Result()
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		fmt.Fprintf(w, "Value from Redis: %s", val)
-	})
+	http.HandleFunc("/ping", shortyService.Ping)
+
+	http.HandleFunc("/getlink", shortyService.GetLink)
+	http.HandleFunc("/setlink", shortyService.SetLink)
 
 	// start the HTTP server
 	log.Fatal(http.ListenAndServe(":8080", nil))

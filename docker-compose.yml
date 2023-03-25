@@ -1,0 +1,14 @@
+version: '3.9'
+services:
+  shorty:
+    build: .
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    env_file:
+      - .env
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"

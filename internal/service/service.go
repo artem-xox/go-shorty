@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 
+	"github.com/sirupsen/logrus"
+
 	"github.com/artem-xox/go-shorty/internal/store"
 )
 
@@ -12,5 +14,6 @@ type Store interface {
 }
 
 type ShortyService struct {
-	Store Store
+	Store  Store
+	Logger *logrus.Logger
 }

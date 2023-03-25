@@ -52,6 +52,24 @@ redis-run:
 	docker run --name ${PROJECT_NAME}-redis -p ${REDIS_PORT}:6379 -d redis:7
 
 .PHONY: redis-stop
-## Run redis locally
+## Remove redis locally
 redis-rm:
 	docker rm -f ${PROJECT_NAME}-redis
+
+.PHONY: ping
+## Ping local service
+ping:
+	curl -I 0.0.0.0:8081/ping
+
+.PHONY: test-pipeline
+##
+test-pipeline:
+	curl -X POST -H 'Content-Type: application/json' -d '{"url": "https://www.facebook.com"}' 0.0.0.0:8081/set
+	curl -X POST -H 'Content-Type: application/json' -d '{"url": "https://www.google.com"}' 0.0.0.0:8081/set
+	curl -X POST -H 'Content-Type: application/json' -d '{"url": "https://www.github.com/artem-xox"}' 0.0.0.0:8081/set
+
+docker-up:
+	docker-compose up --build
+
+docker-down:
+	docker-compose down

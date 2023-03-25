@@ -1,5 +1,11 @@
 package server
 
+import "os"
+
+type ServiceConfig struct {
+	Addr string
+}
+
 type RedisConfig struct {
 	Addr     string
 	Password string
@@ -7,13 +13,17 @@ type RedisConfig struct {
 }
 
 type Config struct {
-	Redis RedisConfig
+	Service ServiceConfig
+	Redis   RedisConfig
 }
 
 func NewConfig() (*Config, error) {
 	return &Config{
+		ServiceConfig{
+			Addr: os.Getenv("SERVICE_ADDR"),
+		},
 		RedisConfig{
-			Addr:     "0.0.0.0:6379",
+			Addr:     os.Getenv("REDIS_ADDR"),
 			DataBase: 1,
 		},
 	}, nil

@@ -22,12 +22,12 @@ func main() {
 	// create a new Redis client
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     cfg.Redis.Addr,
-		Password: "",
-		DB:       0,
+		Password: cfg.Redis.Password,
+		DB:       cfg.Redis.DataBase,
 	})
 
 	shortyService := service.ShortyService{
-		Store: &store.RedisStorage{},
+		Store: &store.MemoryCacheStore{},
 	}
 
 	// test the Redis client connection by pinging the server

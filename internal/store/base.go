@@ -1,6 +1,9 @@
 package store
 
-type Link struct {
-	Long  string
-	Short string
-}
+import (
+	"errors"
+)
+
+var (
+	ErrorLinkNotFound = errors.New("link not found")
+)
